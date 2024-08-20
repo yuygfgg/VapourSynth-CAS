@@ -1,4 +1,4 @@
-#ifdef CAS_X86
+#if defined(CAS_X86) || defined(CAS_ARM)
 #include "CAS.h"
 
 template<typename pixel_t>

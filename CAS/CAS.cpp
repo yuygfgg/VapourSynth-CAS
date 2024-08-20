@@ -30,7 +30,7 @@
 
 #include "CAS.h"
 
-#ifdef CAS_X86
+#if defined(CAS_X86) || defined(CAS_ARM)
 template<typename pixel_t> extern void filter_sse2(const VSFrameRef * src, VSFrameRef * dst, const CASData * const VS_RESTRICT data, const VSAPI * vsapi) noexcept;
 template<typename pixel_t> extern void filter_avx2(const VSFrameRef * src, VSFrameRef * dst, const CASData * const VS_RESTRICT data, const VSAPI * vsapi) noexcept;
 template<typename pixel_t> extern void filter_avx512(const VSFrameRef * src, VSFrameRef * dst, const CASData * const VS_RESTRICT data, const VSAPI * vsapi) noexcept;
@@ -255,6 +255,16 @@ static void VS_CC casCreate(const VSMap * in, VSMap * out, void * userData, VSCo
                 else
                     d->filter = filter_sse2<float>;
             }
+#elif CAS_ARM
+        const int iset = instrset_detect();
+        if ((opt == 0 && iset >= 2) || opt == 2) {
+            if (d->vi->format->bytesPerSample == 1)
+                d->filter = filter_sse2<uint8_t>;
+            else if (d->vi->format->bytesPerSample == 2)
+                d->filter = filter_sse2<uint16_t>;
+            else
+                d->filter = filter_sse2<float>;
+        }
 #endif
         }
 

@@ -52,6 +52,32 @@ if host_machine.cpu_family().startswith('x86')
     cpp_args: ['-mavx512f', '-mavx512vl', '-mavx512bw', '-mavx512dq', '-mfma'],
     gnu_symbol_visibility: 'hidden'
   )
+elif host_machine.cpu_family().startswith('arm') or host_machine.cpu_family() == 'aarch64'
+  add_project_arguments('-O3', '-funroll-loops', '-fno-math-errno', '-fno-trapping-math', '-DCAS_ARM',language: 'cpp')
+  sources += [
+    'CAS/CAS_SSE2.cpp',
+    'CAS/VCL2/instrset.h',
+    'CAS/VCL2/instrset_detect.cpp',
+    'CAS/VCL2/vector_convert.h',
+    'CAS/VCL2/vectorclass.h',
+    'CAS/VCL2/vectorf128.h',
+    'CAS/VCL2/vectorf256.h',
+    'CAS/VCL2/vectorf256e.h',
+    'CAS/VCL2/vectorf512.h',
+    'CAS/VCL2/vectorf512e.h',
+    'CAS/VCL2/vectori128.h',
+    'CAS/VCL2/vectori256.h',
+    'CAS/VCL2/vectori256e.h',
+    'CAS/VCL2/vectori512.h',
+    'CAS/VCL2/vectori512e.h',
+    'CAS/VCL2/vectori512s.h',
+    'CAS/VCL2/vectori512se.h',
+    'CAS/VCL2/vectormath_common.h',
+    'CAS/VCL2/vectormath_exp.h',
+    'CAS/VCL2/vectormath_hyp.h',
+    'CAS/VCL2/vectormath_lib.h',
+    'CAS/VCL2/vectormath_trig.h'
+  ]
 endif
 
 shared_module('cas', sources,
